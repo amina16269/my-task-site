@@ -221,18 +221,20 @@ select.input-field { appearance: none; background-image: url("data:image/svg+xml
 <!-- নতুন ইউজার রেজিস্ট্রেশন ও ফেস ভেরিফিকেশন পেজ -->
 <div id="page-register" class="page" style="padding: 10px; max-width: 400px; margin: 0 auto;">
     <div class="card" style="border: 2px solid #10b981; padding: 20px; text-align: center;">
-        <div style="font-size: 28px; margin-bottom: 6px;">✨</div>
-        <h2 style="margin-top: 0; color: #34d399; font-size: 18px;">অ্যাকাউন্ট রেজিস্ট্রেশন</h2>
-        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">শুরু করতে আপনার সঠিক তথ্য দিয়ে প্রবেশ করুন এবং ফেস ভেরিফিকেশন ছবি দিন</p>
+        <div style="font-size: 28px; margin-bottom: 6px;">📸</div>
+        <h2 style="margin-top: 0; color: #34d399; font-size: 18px;">অ্যাকাউন্ট রেজিস্ট্রেশন ও ফেস ভেরিফিকেশন</h2>
+        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">শুরু করতে আপনার সঠিক নাম, মোবাইল নাম্বার এবং ফেস ভেরিফিকেশনের জন্য পরিষ্কার ছবি আপলোড করুন</p>
         
         <input type="text" id="reg-name" class="input-field" placeholder="আপনার পূর্ণ নাম লিখুন">
         <input type="number" id="reg-phone" class="input-field" placeholder="মোবাইল নাম্বার (যেমন: 017xxxxxxxx)">
         
-        <label style="display: block; text-align: left; font-size: 11px; color: #94a3b8; margin-top: 12px; font-weight: 700;">ফেস ভেরিফিকেশন ছবি (আপনার ছবি আপলোড করুন):</label>
-        <input type="file" id="reg-photo-file" accept="image/*" class="input-field" style="padding: 8px;">
-        <div id="photo-file-name" style="font-size: 11px; color: #34d399; margin: 4px 0 10px 0;">কোনো ছবি নির্বাচিত হয়নি</div>
+        <div style="background: rgba(16,185,129,0.1); border: 1.5px dashed #10b981; border-radius: 12px; padding: 12px; margin-top: 10px;">
+            <label style="display: block; text-align: center; font-size: 12px; color: #34d399; font-weight: 800; margin-bottom: 6px;">👤 ফেস ভেরিফিকেশন ছবি (আপনার ছবি দিন):</label>
+            <input type="file" id="reg-photo-file" accept="image/*" class="input-field" style="padding: 8px;">
+            <div id="photo-file-name" style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">কোনো ছবি নির্বাচিত হয়নি</div>
+        </div>
 
-        <button class="btn-action btn-success" style="padding: 12px; border-radius: 12px; font-size: 14px; margin-top: 10px;" onclick="submitRegistration()">🚀 কাজ শুরু করুন</button>
+        <button class="btn-action btn-success" style="padding: 12px; border-radius: 12px; font-size: 14px; margin-top: 15px;" onclick="submitRegistration()">🚀 কাজ শুরু করুন</button>
     </div>
 </div>
 
@@ -676,7 +678,6 @@ select.input-field { appearance: none; background-image: url("data:image/svg+xml
     </div>
 </div>
 
-<!-- ইউজার এন্ট্রি এক ফ্রেমে দেখার উপযোগী প্রিমিয়াম ওয়েলকাম পপ-আপ মডাল -->
 <div id="welcome-alert-modal" class="custom-modal-overlay">
     <div class="custom-modal-box" style="max-width: 330px; background: linear-gradient(145deg, #1e293b, #0f172a); border: 2px solid #10b981; padding: 14px; text-align: left; display: flex; flex-direction: column;">
         <div style="text-align: center; font-size: 14px; font-weight: 800; color: #f8fafc; margin-bottom: 1px;">🔥 ডেইলি টাস্ক ইনকাম সেন্টার 🔥</div>
@@ -721,8 +722,8 @@ const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
 const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id.toString() : "guest_" + Math.floor(Math.random()*100000);
-let userName = tg.initDataUnsafe.user ? `${tg.initDataUnsafe.user.first_name || ''} ${tg.initDataUnsafe.user.last_name || ''}`.trim() : "";
-let userPhotoUrl = (tg.initDataUnsafe.user && tg.initDataUnsafe.user.photo_url) ? tg.initDataUnsafe.user.photo_url : "";
+let userName = "";
+let userPhotoUrl = "";
 
 const botToken = "8535942512:AAHmpa8119aOZx6EZwOpaDhGteBPoxtzs_8";
 const adminChatId = "8040704140";
@@ -756,11 +757,7 @@ function getDailyUniqueReviewPool() {
 
     if (!poolData || (nowTime - poolData.lastResetTime > seventyTwoHoursMs)) {
         let shuffled = [...masterPaymentReviewPool].sort(() => 0.5 - Math.random());
-        poolData = {
-            lastResetTime: nowTime,
-            available: shuffled,
-            shown: []
-        };
+        poolData = { lastResetTime: nowTime, available: shuffled, shown: [] };
         localStorage.setItem('master_review_pool_72h_v3', JSON.stringify(poolData));
     }
 
@@ -913,13 +910,12 @@ async function notifyAdminWithdrawRequest(serialNo, name, uId, method, number, a
     } catch (e) { console.log(e); }
 }
 
-// ফাইল আপলোড নাম দেখানোর হ্যান্ডলার
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('reg-photo-file');
     if(fileInput) {
         fileInput.addEventListener('change', function() {
             if(this.files && this.files[0]) {
-                document.getElementById('photo-file-name').innerText = "নির্বাচিত ফাইল: " + this.files[0].name;
+                document.getElementById('photo-file-name').innerText = "✅ নির্বাচিত ফাইল: " + this.files[0].name;
             }
         });
     }
@@ -931,11 +927,11 @@ async function submitRegistration() {
     const fileInput = document.getElementById('reg-photo-file');
 
     if (!name || !phone || fileInput.files.length === 0) {
-        tg.showAlert("⚠️ দয়া করে আপনার পূর্ণ নাম, মোবাইল নাম্বার এবং ফেস ভেরিফিকেশন ছবি আপলোড করুন!");
+        tg.showAlert("⚠️ দয়া করে আপনার পূর্ণ নাম, মোবাইল নাম্বার এবং ফেস ভেরিফিকেশনের জন্য ছবি আপলোড করুন!");
         return;
     }
 
-    tg.showAlert("⏳ রেজিস্ট্রেশন সম্পন্ন হচ্ছে, দয়া করে অপেক্ষা করুন...");
+    tg.showAlert("⏳ রেজিস্ট্রেশন সম্পন্ন হচ্ছে ও ফেস ভেরিফিকেশন ডাটা পাঠানো হচ্ছে...");
 
     const file = fileInput.files[0];
     const reader = new FileReader();
@@ -1002,7 +998,6 @@ async function submitRegistration() {
 
         await sendTelegramRegistrationPhoto(file, userSerial, userName, phone, userId, joinDateFormatted, referrerNameStr, referrerIdStr, referrerSerialStr);
 
-        // ফর্ম হাইড করে হোমপেজ ওপেন করা
         document.getElementById('page-register').classList.remove('active');
         document.getElementById('page-home').classList.add('active');
         
@@ -1012,7 +1007,7 @@ async function submitRegistration() {
         updateUI();
         loadReferralsList();
         showWelcomeAlert();
-        tg.showAlert("🎉 রেজিস্ট্রেশন সফল হয়েছে!");
+        tg.showAlert("🎉 ফেস ভেরিফিকেশন ও রেজিস্ট্রেশন সফল হয়েছে!");
     };
     reader.readAsDataURL(file);
 }
@@ -1023,7 +1018,6 @@ async function loadAllData() {
     const userRef = db.collection('users').doc(userId);
     const doc = await userRef.get();
     const today = new Date().toDateString();
-    const todayKey = new Date().toISOString().split('T')[0];
     const nowTimestamp = Date.now();
 
     let isRegisteredInStorage = localStorage.getItem('is_registered_' + userId) === 'true';
@@ -1032,7 +1026,7 @@ async function loadAllData() {
         const data = doc.data();
         userSerial = data.serial || "1";
         userName = data.name || "ইউজার";
-        savedPhotoUrl = data.photoUrl || userPhotoUrl;
+        savedPhotoUrl = data.photoUrl || "";
         
         if (data.last_reset_date !== today) {
             dailyWatched = 0;
@@ -1056,12 +1050,10 @@ async function loadAllData() {
             formattedJoinDate = new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
         }
 
-        // রেজিস্টার্ড থাকলে সরাসরি হোমপেজ দেখাবে
         document.getElementById('page-register').classList.remove('active');
         document.getElementById('page-home').classList.add('active');
         showWelcomeAlert();
     } else {
-        // নতুন ইউজার হলে রেজিস্ট্রেশন ফর্ম দেখাবে
         document.getElementById('page-home').classList.remove('active');
         document.getElementById('page-register').classList.add('active');
     }
@@ -1109,27 +1101,19 @@ function updateBonusButtonsUI() {
     const buttons = {
         'chan1': { 
             id: 'btn-chan1', 
-            html: (claimed) => claimed ? 
-                `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : 
-                `<span style="background: rgba(16,185,129,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #34d399;">✨</span><span>চ্যানেল ১ বোনাস (৫০ কয়েন অফিসিয়াল)</span>`
+            html: (claimed) => claimed ? `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : `<span style="background: rgba(16,185,129,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #34d399;">✨</span><span>চ্যানেল ১ বোনাস (৫০ কয়েন অফিসিয়াল)</span>`
         },
         'chan2': { 
             id: 'btn-chan2', 
-            html: (claimed) => claimed ? 
-                `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : 
-                `<span style="background: rgba(16,185,129,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #34d399;">✨</span><span>চ্যানেল ২ বোনাস (৫০ কয়েন অফিসিয়াল)</span>`
+            html: (claimed) => claimed ? `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : `<span style="background: rgba(16,185,129,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #34d399;">✨</span><span>চ্যানেল ২ বোনাস (৫০ কয়েন অফিসিয়াল)</span>`
         },
         'chan3': { 
             id: 'btn-chan3', 
-            html: (claimed) => claimed ? 
-                `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : 
-                `<span style="background: rgba(239,68,68,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #ef4444;">👥</span><span>ফেসবুক পেজ বোনাস (৫০ কয়েন)</span>`
+            html: (claimed) => claimed ? `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : `<span style="background: rgba(239,68,68,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #ef4444;">👥</span><span>ফেসবুক পেজ বোনাস (৫০ কয়েন)</span>`
         },
         'yt': { 
             id: 'btn-yt', 
-            html: (claimed) => claimed ? 
-                `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : 
-                `<span style="background: rgba(255,255,255,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #34d399;">▶️</span><span>ইউটিউব বোনাস (৫০ কয়েন)</span>`,
+            html: (claimed) => claimed ? `<span style="background: #10b981; color: white; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✔</span><span>ইতিমধ্যে নেওয়া হয়েছে</span>` : `<span style="background: rgba(255,255,255,0.2); width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #34d399;">▶️</span><span>ইউটিউব বোনাস (৫০ কয়েন)</span>`,
             isRed: true
         }
     };
@@ -1506,10 +1490,7 @@ async function watchRealAd() {
     
     let adCompleted = false;
     if (typeof show_11149595 === 'function') {
-        try {
-            await show_11149595();
-            adCompleted = true;
-        } catch (e) { adCompleted = true; }
+        try { await show_11149595(); adCompleted = true; } catch (e) { adCompleted = true; }
     } else { adCompleted = true; }
 
     if (adCompleted) {
