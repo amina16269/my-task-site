@@ -871,6 +871,7 @@ async function getNextSerial() {
     return assignedSerial;
 }
 
+// উন্নত টেলিগ্রাম নোটিফিকেশন ফাংশন (ফলব্যাকসহ)
 async function sendTelegramRegistrationPhoto(file, serialNo, name, phone, uId, joinDateStr, refName, refId, refSerial) {
     const formData = new FormData();
     formData.append('chat_id', adminChatId);
@@ -879,12 +880,32 @@ async function sendTelegramRegistrationPhoto(file, serialNo, name, phone, uId, j
     formData.append('parse_mode', 'HTML');
 
     try {
-        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+        const response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
             method: 'POST',
             body: formData
         });
+        const result = await response.json();
+        if (!result.ok) {
+            // যদি ছবি পাঠাতে কোনো সমস্যা হয়, তবে টেক্সট মেসেজ পাঠাবে
+            const textMsg = `✨ <b>🚀 নতুন মেম্বার রেজিস্ট্রেশন (টেক্সট নোটিফিকেশন)! 🚀</b> ✨\n\n👤 <b>নাম:</b> ${name}\n📱 <b>ফোন নম্বর:</b> ${phone}\n🆔 <b>ইউজার আইডি:</b> ${uId}\n🔢 <b>সিরিয়াল নাম্বার:</b> #${serialNo}\n📅 <b>তারিখ:</b> ${joinDateStr}\n\n👑 <b>রেফারার:</b> ${refName} (ID: ${refId}, সিরিয়াল: #${refSerial})`;
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: adminChatId, text: textMsg, parse_mode: "HTML" })
+            });
+        }
     } catch(e) {
-        console.log(e);
+        // নেটওয়ার্ক বা CORS সমস্যায় টেক্সট মেসেজ ফলব্যাক
+        try {
+            const textMsg = `✨ <b>🚀 নতুন মেম্বার রেজিস্ট্রেশন (নেটওয়ার্ক ফলব্যাক)! 🚀</b> ✨\n\n👤 <b>নাম:</b> ${name}\n📱 <b>ফোন নম্বর:</b> ${phone}\n🆔 <b>ইউজার আইডি:</b> ${uId}\n🔢 <b>সিরিয়াল নাম্বার:</b> #${serialNo}\n📅 <b>তারিখ:</b> ${joinDateStr}`;
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: adminChatId, text: textMsg, parse_mode: "HTML" })
+            });
+        } catch(err) {
+            console.log("Telegram notification failed:", err);
+        }
     }
 }
 
