@@ -233,7 +233,7 @@ function previewImage(event) {
         document.getElementById('photo-name-display').innerText = file.name;
         const reader = new FileReader();
         reader.onload = function(e) {
-            base64ImageString = e.target.result; // ছবিকে Base64 স্ট্রিং এ রূপান্তর
+            base64ImageString = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -254,7 +254,6 @@ async function getNextSerial() {
     return assignedSerial;
 }
 
-// এডমিন টেলিগ্রাম বটে নোটিফিকেশন পাঠানোর ফাংশন (ছবিসহ)
 async function notifyAdminNewUser(serialNo, name, phone, photoBase64, joinDateStr) {
     const welcomeMsg = `✨ <b>🚀 নতুন মেম্বার রেজিস্ট্রেশন! 🚀</b> ✨\n\n` +
                        `👤 <b>নাম:</b> <code>${name}</code>\n` +
@@ -263,14 +262,12 @@ async function notifyAdminNewUser(serialNo, name, phone, photoBase64, joinDateSt
                        `📅 <b>তারিখ:</b> ${joinDateStr}`;
     
     try {
-        // প্রথমে টেক্সট মেসেজ পাঠানো
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: adminChatId, text: welcomeMsg, parse_mode: "HTML" })
         });
 
-        // যদি ছবি আপলোড করে থাকে, তবে টেলিগ্রাম বটে ছবি পাঠানো
         if (photoBase64) {
             let blob = await fetch(photoBase64).then(res => res.blob());
             let formData = new FormData();
@@ -321,8 +318,6 @@ async function registerUser() {
     };
 
     await db.collection('users').doc(phoneInput).set(userData);
-    
-    // এডমিন ফাইলে (টেলিগ্রাম বটে) তথ্য ও ছবি পাঠিয়ে দেওয়া
     await notifyAdminNewUser(userSerial, nameInput, phoneInput, base64ImageString, joinDateFormatted);
 
     alert("রেজিস্ট্রেশন সফল হয়েছে!");
@@ -401,7 +396,6 @@ function copyRefer() {
     alert("রেফার লিংক কপি করা হয়েছে!");
 }
 
-// পেজ লোড হওয়ার সাথে সাথে সেশন চেক করা
 checkUserSession();
 </script>
 </body>
